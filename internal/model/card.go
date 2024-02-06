@@ -13,10 +13,10 @@ type Card struct {
 }
 
 // valid suits
-var suits = []string{"SPADES", "DIAMONDS", "CLUBS", "HEARTS"}
+var Suits = []string{"SPADES", "DIAMONDS", "CLUBS", "HEARTS"}
 
 // valid values
-var values = []string{"ACE", "2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING"}
+var Values = []string{"ACE", "2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING"}
 
 // errors
 var (
@@ -25,11 +25,11 @@ var (
 )
 
 func NewCard(value, suit string) (Card, error) {
-	if !pkg.Contains(values, value) {
+	if !pkg.Contains(Values, value) {
 		return Card{}, ErrInvalidValue
 	}
 
-	if !pkg.Contains(suits, suit) {
+	if !pkg.Contains(Suits, suit) {
 		return Card{}, ErrInvalidSuit
 	}
 
