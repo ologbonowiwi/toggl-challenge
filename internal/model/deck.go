@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"math/rand"
 
 	"github.com/google/uuid"
@@ -12,6 +13,12 @@ type Deck struct {
 	Suffled   bool
 	Remaining int
 }
+
+// errors
+var (
+	ErrNotEnoughCards = errors.New("not enough cards")
+	ErrInvalidAmount  = errors.New("invalid amount")
+)
 
 func NewDeck(shuffled bool) Deck {
 	cards := make([]Card, 0, 52)
@@ -42,4 +49,20 @@ func (d *Deck) Shuffle() {
 		j := rand.Intn(i + 1)
 		d.Cards[i], d.Cards[j] = d.Cards[j], d.Cards[i]
 	}
+}
+
+func (d *Deck) DrawCards(amount int) ([]Card, error) {
+	if amount > d.Remaining {
+		return nil, ErrNotEnoughCards
+	}
+
+	if amount < 0 {
+		return nil, ErrInvalidAmount
+	}
+
+	cards := d.Cards[:amount]
+	d.Cards = d.Cards[amount:]
+	d.Remaining -= amount
+
+	return cards, nil
 }
