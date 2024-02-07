@@ -49,6 +49,7 @@ func (d *Deck) Shuffle() {
 		j := rand.Intn(i + 1)
 		d.Cards[i], d.Cards[j] = d.Cards[j], d.Cards[i]
 	}
+	d.Suffled = true
 }
 
 func (d *Deck) DrawCards(amount int) ([]Card, error) {

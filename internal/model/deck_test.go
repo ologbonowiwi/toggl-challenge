@@ -7,6 +7,11 @@ import (
 	"github.com/ologbonowiwi/toggl-challenge/internal/model"
 )
 
+const (
+	wantFullDeck     = "len(deck.Cards) = %d, want 52"
+	wantShuffledDeck = "deck.Suffled = %t, want true"
+)
+
 func TestNewDeck(t *testing.T) {
 	deck := model.NewDeck(false)
 	if len(deck.Cards) != 52 {
@@ -38,11 +43,11 @@ func TestNewDeckOrder(t *testing.T) {
 func TestNewDeckSuffledOrder(t *testing.T) {
 	deck := model.NewDeck(true)
 	if len(deck.Cards) != 52 {
-		t.Errorf("len(deck.Cards) = %d, want 52", len(deck.Cards))
+		t.Errorf(wantFullDeck, len(deck.Cards))
 	}
 
 	if !deck.Suffled {
-		t.Errorf("deck.Suffled = %t, want true", deck.Suffled)
+		t.Errorf(wantShuffledDeck, deck.Suffled)
 	}
 
 	// starts considering the decks are equal
@@ -94,6 +99,40 @@ func TestNewDeckAmountOfSuit(t *testing.T) {
 		if count != 4 {
 			t.Errorf("NewDeck() = %d, want 4", count)
 		}
+	}
+}
+
+func TestShuffle(t *testing.T) {
+	deck := model.NewDeck(false)
+	deck.Shuffle()
+
+	if !deck.Suffled {
+		t.Errorf(wantShuffledDeck, deck.Suffled)
+	}
+
+	if len(deck.Cards) != 52 {
+		t.Errorf(wantFullDeck, len(deck.Cards))
+	}
+
+	if !deck.Suffled {
+		t.Errorf(wantShuffledDeck, deck.Suffled)
+	}
+
+	// starts considering the decks are equal
+	// it should be proven wrong on comparison
+	equals := true
+	d := model.NewDeck(false)
+
+	for i, card := range deck.Cards {
+		// if any card is different, the decks are different
+		if card != d.Cards[i] {
+			equals = false
+			break
+		}
+	}
+
+	if equals {
+		t.Errorf("NewDeck() = %v, want different", deck.Cards)
 	}
 }
 
@@ -159,7 +198,7 @@ func TestDrawCardsError(t *testing.T) {
 			}
 
 			if len(deck.Cards) != 52 {
-				t.Errorf("len(deck.Cards) = %d, want 52", len(deck.Cards))
+				t.Errorf(wantFullDeck, len(deck.Cards))
 			}
 		})
 	}
