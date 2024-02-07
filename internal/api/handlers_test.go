@@ -15,7 +15,7 @@ import (
 
 const decksRoute = "/api/decks/"
 
-func TestE2E(t *testing.T) {
+func TestAPIHandlers(t *testing.T) {
 	app := app.SetupApp()
 
 	var id string
