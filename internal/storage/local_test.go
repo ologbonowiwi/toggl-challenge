@@ -10,7 +10,7 @@ import (
 
 func TestLocalDeckRepositorySaveAndGetDeck(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 
 	if err := repo.SaveDeck(&deck); err != nil {
 		t.Errorf("SaveDeck() error = %v, want nil", err)
@@ -23,7 +23,7 @@ func TestLocalDeckRepositorySaveAndGetDeck(t *testing.T) {
 
 func TestLocalDeckRepositorySaveDeckInvalid(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 	deck.ID = "" // invalid deck
 
 	if err := repo.SaveDeck(&deck); err == nil {
@@ -53,7 +53,7 @@ func TestLocalDeckRepositorySaveAndGetDeckConcurrently(t *testing.T) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			deck := model.NewDeck(false)
+			deck := model.NewDeck()
 			repo.SaveDeck(&deck)
 			ids <- deck.ID
 		}()

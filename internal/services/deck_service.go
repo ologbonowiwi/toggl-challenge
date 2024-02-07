@@ -24,7 +24,12 @@ func NewDeckService(deckRepository DeckRepository) *DeckService {
 }
 
 func (ds *DeckService) NewDeck(shuffled bool) *model.Deck {
-	deck := model.NewDeck(shuffled)
+	deck := model.NewDeck()
+
+	if shuffled {
+		deck.Shuffle()
+	}
+
 	ds.deckRepository.SaveDeck(&deck)
 	return &deck
 }

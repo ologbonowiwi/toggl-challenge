@@ -10,7 +10,7 @@ import (
 type Deck struct {
 	ID        string `json:"id"`
 	Cards     []Card `json:"cards"`
-	Suffled   bool   `json:"suffled"`
+	Shuffled  bool   `json:"shuffled"`
 	Remaining int    `json:"remaining"`
 }
 
@@ -20,7 +20,7 @@ var (
 	ErrInvalidAmount  = errors.New("invalid amount")
 )
 
-func NewDeck(shuffled bool) Deck {
+func NewDeck() Deck {
 	cards := make([]Card, 0, 52)
 
 	for _, suit := range Suits {
@@ -33,12 +33,8 @@ func NewDeck(shuffled bool) Deck {
 	deck := Deck{
 		ID:        uuid.NewString(),
 		Cards:     cards,
-		Suffled:   shuffled,
+		Shuffled:  false,
 		Remaining: len(cards),
-	}
-
-	if shuffled {
-		deck.Shuffle()
 	}
 
 	return deck
@@ -49,7 +45,7 @@ func (d *Deck) Shuffle() {
 		j := rand.Intn(i + 1)
 		d.Cards[i], d.Cards[j] = d.Cards[j], d.Cards[i]
 	}
-	d.Suffled = true
+	d.Shuffled = true
 }
 
 func (d *Deck) DrawCards(amount int) ([]Card, error) {

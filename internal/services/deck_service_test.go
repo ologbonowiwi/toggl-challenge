@@ -20,6 +20,17 @@ func TestDeckServiceNewDeck(t *testing.T) {
 	}
 }
 
+func TestDeckServiceShuffleDeck(t *testing.T) {
+	repo := storage.NewLocalDeckRepository()
+	service := services.NewDeckService(repo)
+
+	deck := service.NewDeck(true)
+
+	if deck.Shuffled != true {
+		t.Errorf("ShuffleDeck() = %t, want true", deck.Shuffled)
+	}
+}
+
 func TestDeckServiceDrawCards(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)

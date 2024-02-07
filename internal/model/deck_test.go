@@ -9,17 +9,17 @@ import (
 
 const (
 	wantFullDeck     = "len(deck.Cards) = %d, want 52"
-	wantShuffledDeck = "deck.Suffled = %t, want true"
+	wantShuffledDeck = "deck.Shuffled = %t, want true"
 )
 
 func TestNewDeck(t *testing.T) {
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 	if len(deck.Cards) != 52 {
 		t.Errorf("NewDeck() length = %d, want 52", len(deck.Cards))
 	}
 
-	if deck.Suffled != false {
-		t.Errorf("NewDeck().Suffled = %t, want false", deck.Suffled)
+	if deck.Shuffled != false {
+		t.Errorf("NewDeck().Shuffled = %t, want false", deck.Shuffled)
 	}
 
 	if deck.Remaining != 52 {
@@ -28,7 +28,7 @@ func TestNewDeck(t *testing.T) {
 }
 
 func TestNewDeckOrder(t *testing.T) {
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 	for i, card := range deck.Cards {
 		if card.Suit != model.Suits[i/13] {
 			t.Errorf("NewDeck() = %s, want %s", card.Suit, model.Suits[i/13])
@@ -40,20 +40,26 @@ func TestNewDeckOrder(t *testing.T) {
 	}
 }
 
-func TestNewDeckSuffledOrder(t *testing.T) {
-	deck := model.NewDeck(true)
+func TestNewDeckShuffledOrder(t *testing.T) {
+	deck := model.NewDeck()
 	if len(deck.Cards) != 52 {
 		t.Errorf(wantFullDeck, len(deck.Cards))
 	}
 
-	if !deck.Suffled {
-		t.Errorf(wantShuffledDeck, deck.Suffled)
+	if deck.Shuffled {
+		t.Errorf("NewDeck().Shuffled = %t, want false", deck.Shuffled)
+	}
+
+	deck.Shuffle()
+
+	if !deck.Shuffled {
+		t.Errorf(wantShuffledDeck, deck.Shuffled)
 	}
 
 	// starts considering the decks are equal
 	// it should be proven wrong on comparison
 	equals := true
-	d := model.NewDeck(false)
+	d := model.NewDeck()
 
 	for i, card := range deck.Cards {
 		// if any card is different, the decks are different
@@ -69,7 +75,7 @@ func TestNewDeckSuffledOrder(t *testing.T) {
 }
 
 func TestNewDeckValuePerSuit(t *testing.T) {
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 
 	for _, suit := range model.Suits {
 		count := 0
@@ -86,7 +92,7 @@ func TestNewDeckValuePerSuit(t *testing.T) {
 }
 
 func TestNewDeckAmountOfSuit(t *testing.T) {
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 
 	for _, value := range model.Values {
 		count := 0
@@ -103,25 +109,25 @@ func TestNewDeckAmountOfSuit(t *testing.T) {
 }
 
 func TestShuffle(t *testing.T) {
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 	deck.Shuffle()
 
-	if !deck.Suffled {
-		t.Errorf(wantShuffledDeck, deck.Suffled)
+	if !deck.Shuffled {
+		t.Errorf(wantShuffledDeck, deck.Shuffled)
 	}
 
 	if len(deck.Cards) != 52 {
 		t.Errorf(wantFullDeck, len(deck.Cards))
 	}
 
-	if !deck.Suffled {
-		t.Errorf(wantShuffledDeck, deck.Suffled)
+	if !deck.Shuffled {
+		t.Errorf(wantShuffledDeck, deck.Shuffled)
 	}
 
 	// starts considering the decks are equal
 	// it should be proven wrong on comparison
 	equals := true
-	d := model.NewDeck(false)
+	d := model.NewDeck()
 
 	for i, card := range deck.Cards {
 		// if any card is different, the decks are different
@@ -151,7 +157,7 @@ func TestDrawCards(t *testing.T) {
 	for _, test := range tests {
 		for _, shuffle := range []bool{false, true} {
 			t.Run(fmt.Sprintf("%s, shuffle=%v", test.name, shuffle), func(t *testing.T) {
-				deck := model.NewDeck(shuffle)
+				deck := model.NewDeck()
 				_, err := deck.DrawCards(test.amount)
 
 				if err != nil {
@@ -182,7 +188,7 @@ func TestDrawCardsError(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			deck := model.NewDeck(false)
+			deck := model.NewDeck()
 			_, err := deck.DrawCards(test.amount)
 
 			if err != test.err {
@@ -205,7 +211,7 @@ func TestDrawCardsError(t *testing.T) {
 }
 
 func TestDrawAllCardsTwice(t *testing.T) {
-	deck := model.NewDeck(false)
+	deck := model.NewDeck()
 	_, err := deck.DrawCards(52)
 
 	if err != nil {
