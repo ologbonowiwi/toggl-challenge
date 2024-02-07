@@ -8,10 +8,10 @@ import (
 )
 
 type Deck struct {
-	ID        string
-	Cards     []Card
-	Suffled   bool
-	Remaining int
+	ID        string `json:"id"`
+	Cards     []Card `json:"cards"`
+	Suffled   bool   `json:"suffled"`
+	Remaining int    `json:"remaining"`
 }
 
 // errors

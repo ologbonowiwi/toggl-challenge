@@ -7,9 +7,9 @@ import (
 )
 
 type Card struct {
-	Value string
-	Suit  string
-	Code  string
+	Value string `json:"value"`
+	Suit  string `json:"suit"`
+	Code  string `json:"code"`
 }
 
 // valid suits
