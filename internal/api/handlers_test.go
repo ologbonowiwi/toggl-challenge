@@ -38,12 +38,14 @@ func TestE2E(t *testing.T) {
 	})
 
 	t.Run("CreateDeckFiltered", func(t *testing.T) {
-		query := `codes=AS,2S,3S,4S,5S,6S,7S,8S,9S,10S,JS,QS,KS`
-		req := httptest.NewRequest(http.MethodPost, "/api/decks?"+query, nil)
-		req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
-		resp, err := app.Test(req)
-		assert.NoError(t, err)
-		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		for _, shuffled := range []bool{true, false} {
+			query := "shuffle=" + strconv.FormatBool(shuffled) + "&codes=AS,2S,3S,4S,5S,6S,7S,8S,9S,10S,JS,QS,KS"
+			req := httptest.NewRequest(http.MethodPost, "/api/decks?"+query, nil)
+			req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+			resp, err := app.Test(req)
+			assert.NoError(t, err)
+			assert.Equal(t, http.StatusOK, resp.StatusCode)
+		}
 	})
 
 	t.Run("DrawCards", func(t *testing.T) {
