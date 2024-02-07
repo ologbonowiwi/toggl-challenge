@@ -23,7 +23,7 @@ func NewDeckService(deckRepository deckRepository) *DeckService {
 	return &DeckService{deckRepository: deckRepository}
 }
 
-func (ds *DeckService) NewDeck(shuffled bool, codes []string) *model.Deck {
+func (ds *DeckService) CreateDeck(shuffled bool, codes []string) *model.Deck {
 	deck := model.NewDeck()
 
 	if shuffled {

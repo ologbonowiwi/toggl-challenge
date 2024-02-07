@@ -10,17 +10,17 @@ import (
 
 const drawCardsWantNil = "DrawCards() = %v, want nil"
 
-func TestDeckServiceNewDeck(t *testing.T) {
+func TestDeckServiceCreateDeck(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)
 
-	deck := service.NewDeck(false, []string{})
+	deck := service.CreateDeck(false, []string{})
 	if deck == nil {
-		t.Errorf("NewDeck() = nil, want %v", deck)
+		t.Errorf("CreateDeck() = nil, want %v", deck)
 	}
 }
 
-func TestDeckServiceNewDeckFiltered(t *testing.T) {
+func TestDeckServiceCreateDeckFiltered(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)
 
@@ -48,9 +48,9 @@ func TestDeckServiceNewDeckFiltered(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			deck := service.NewDeck(false, tt.codes)
+			deck := service.CreateDeck(false, tt.codes)
 			if len(deck.Cards) != tt.want {
-				t.Errorf("len(NewDeck()) = %d, want %d", len(deck.Cards), tt.want)
+				t.Errorf("len(CreateDeck()) = %d, want %d", len(deck.Cards), tt.want)
 			}
 		})
 	}
@@ -60,7 +60,7 @@ func TestDeckServiceNewShuffledDeck(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)
 
-	deck := service.NewDeck(true, []string{})
+	deck := service.CreateDeck(true, []string{})
 
 	if deck.Shuffled != true {
 		t.Errorf("ShuffleDeck() = %t, want true", deck.Shuffled)
@@ -71,7 +71,7 @@ func TestDeckServiceDrawCards(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)
 
-	deck := service.NewDeck(false, []string{})
+	deck := service.CreateDeck(false, []string{})
 	cards, err := service.DrawCards(deck.ID, 5)
 	if err != nil {
 		t.Errorf("DrawCards() error = %v, want nil", err)
@@ -86,7 +86,7 @@ func TestDeckServiceGetDeck(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)
 
-	deck := service.NewDeck(false, []string{})
+	deck := service.CreateDeck(false, []string{})
 	got, err := service.GetDeck(deck.ID)
 	if err != nil {
 		t.Errorf("GetDeck() error = %v, want nil", err)
@@ -129,7 +129,7 @@ func TestDeckServiceDrawCardsError(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)
 
-	deck := service.NewDeck(false, []string{})
+	deck := service.CreateDeck(false, []string{})
 	cards, err := service.DrawCards(deck.ID, 53)
 	if cards != nil {
 		t.Errorf(drawCardsWantNil, cards)
@@ -144,7 +144,7 @@ func TestDeckServiceDrawCardsInvalidAmount(t *testing.T) {
 	repo := storage.NewLocalDeckRepository()
 	service := services.NewDeckService(repo)
 
-	deck := service.NewDeck(false, []string{})
+	deck := service.CreateDeck(false, []string{})
 	cards, err := service.DrawCards(deck.ID, -1)
 	if cards != nil {
 		t.Errorf(drawCardsWantNil, cards)
