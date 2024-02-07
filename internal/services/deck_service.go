@@ -10,24 +10,41 @@ var (
 	ErrDeckNotFound = errors.New("deck not found")
 )
 
-type DeckRepository interface {
+type deckRepository interface {
 	GetDeck(id string) *model.Deck
 	SaveDeck(deck *model.Deck) error
 }
 
 type DeckService struct {
-	deckRepository DeckRepository
+	deckRepository deckRepository
 }
 
-func NewDeckService(deckRepository DeckRepository) *DeckService {
+func NewDeckService(deckRepository deckRepository) *DeckService {
 	return &DeckService{deckRepository: deckRepository}
 }
 
-func (ds *DeckService) NewDeck(shuffled bool) *model.Deck {
+func (ds *DeckService) NewDeck(shuffled bool, codes []string) *model.Deck {
 	deck := model.NewDeck()
 
 	if shuffled {
 		deck.Shuffle()
+	}
+
+	if len(codes) > 0 {
+		codesMap := make(map[string]bool)
+		for _, code := range codes {
+			codesMap[code] = true
+		}
+
+		filtered := make([]model.Card, 0, len(deck.Cards))
+		for _, card := range deck.Cards {
+			if _, exists := codesMap[card.Code]; exists {
+				filtered = append(filtered, card)
+			}
+		}
+
+		deck.Cards = filtered
+		deck.Remaining = len(filtered)
 	}
 
 	ds.deckRepository.SaveDeck(&deck)
@@ -47,6 +64,12 @@ func (ds *DeckService) DrawCards(id string, amount int) ([]model.Card, error) {
 	return cards, nil
 }
 
-func (ds *DeckService) GetDeck(id string) *model.Deck {
-	return ds.deckRepository.GetDeck(id)
+func (ds *DeckService) GetDeck(id string) (*model.Deck, error) {
+	deck := ds.deckRepository.GetDeck(id)
+
+	if deck == nil {
+		return nil, ErrDeckNotFound
+	}
+
+	return deck, nil
 }
